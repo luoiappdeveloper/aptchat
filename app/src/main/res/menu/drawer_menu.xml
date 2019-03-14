@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android" >
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_services"
+            android:icon="@drawable/outline_assignment_24"
+            android:title="@string/nav_menu_services" />
+        <item
+            android:id="@+id/nav_technician"
+            android:icon="@drawable/outline_account_box_24"
+            android:title="@string/nav_menu_technician" />
+        <item
+            android:id="@+id/nav_special_request"
+            android:icon="@drawable/outline_event_24"
+            android:title="@string/nav_menu_appt" />
+
+    </group>
+</menu>
