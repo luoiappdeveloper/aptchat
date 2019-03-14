@@ -3,15 +3,34 @@ package com.example.aptchat;
 import android.content.Context;
 import android.graphics.Point;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Display;
 import android.view.Gravity;
+import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity implements HorizontalScroll.ScrollViewListener, VerticalScroll.ScrollViewListener {
 
@@ -20,6 +39,8 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
     private static int WIDTH_SIZE = 10;
     private static int WIDTH_SIZEAC= 8;
     private static int HEIGHT_SIZE = 10;
+    public static String dba = "USA NAILS";
+
     RelativeLayout relativeLayoutMain;
 
     RelativeLayout relativeLayoutA;
@@ -27,10 +48,10 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
     RelativeLayout relativeLayoutC;
     RelativeLayout relativeLayoutD;
 
-    TableLayout tableLayoutA;
-    TableLayout tableLayoutB;
-    TableLayout tableLayoutC;
-    TableLayout tableLayoutD;
+    private static TableLayout tableLayoutA;
+    private static TableLayout tableLayoutB;
+    private static TableLayout tableLayoutC;
+    private static TableLayout tableLayoutD;
 
     TableRow tableRow;
     TableRow tableRowB;
@@ -41,6 +62,16 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
     VerticalScroll scrollViewC;
     VerticalScroll scrollViewD;
 
+    Calendar rightnow = Calendar.getInstance();
+    public static Calendar currentDay = Calendar.getInstance();
+    static String dateToDatabase = currentDay.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault())
+             + currentDay.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault())
+             + currentDay.get(Calendar.DAY_OF_MONTH)
+             + currentDay.get(Calendar.YEAR);
+
+    static ArrayList<String> thoCoHen ;
+
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
 
 
     /*
@@ -60,6 +91,7 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         /*
             Mandatory Content
          */
+
         relativeLayoutMain= findViewById(R.id.relativeLayoutMain);
         getScreenDimension();
         initializeRelativeLayout();
@@ -75,24 +107,31 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         /*
             Till Here.
          */
-        
+
+        Button datePickerButton = findViewById(R.id.date);
+        String todaytext = currentDay.getDisplayName(Calendar.DAY_OF_WEEK, Calendar.SHORT, Locale.getDefault()) +
+                ", " + currentDay.getDisplayName(Calendar.MONTH, Calendar.SHORT, Locale.getDefault()) +
+                " " + currentDay.get(Calendar.DAY_OF_MONTH) +
+                " " + currentDay.get(Calendar.YEAR);
+
+        datePickerButton.setText(todaytext);
+        datePickerButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                DialogFragment newFragment = new DatePickerFragment();
+                newFragment.show(getSupportFragmentManager(), "Date Picker");
+            }
+        });
 
         /*  There is two unused functions
             Have a look on these functions and try to recreate and use it.
             createCompleteColumn();
             createCompleteRow();
         */
-        for(int i=0; i<9; i++){
-            addColumnsToTableB("Head" + i, i);
-        }
-        for(int i=0; i<20; i++){
-            initializeRowForTableD(i);
-            addRowToTableC("Row"+ i);
-            for(int j=0; j<tableColumnCountB; j++){
-                addColumnToTableAtD(i, "D "+ i + " " + j);
-            }
-        }
+        buildCellsForTableD();
     }
+
+
 
     private void getScreenDimension(){
         WindowManager wm= (WindowManager) getApplicationContext().getSystemService(Context.WINDOW_SERVICE);
@@ -195,6 +234,7 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
 
         TableLayout.LayoutParams layoutParamsTableLayoutD= new TableLayout.LayoutParams(TableLayout.LayoutParams.MATCH_PARENT, TableLayout.LayoutParams.MATCH_PARENT);
         tableLayoutD.setLayoutParams(layoutParamsTableLayoutD);
+        tableLayoutD.setId(R.id.id_tableLayoutD);
         this.horizontalScrollViewD.addView(tableLayoutD);
 
     }
@@ -272,15 +312,15 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
     }
 
     private synchronized void initializeRowForTableD(int pos){
-        TableRow tableRowB= new TableRow(getApplicationContext());
+        TableRow tableRowD= new TableRow(getApplicationContext());
         TableRow.LayoutParams layoutParamsTableRow= new TableRow.LayoutParams(TableRow.LayoutParams.WRAP_CONTENT, SCREEN_HEIGHT/HEIGHT_SIZE);
-        tableRowB.setPadding(0,0,0,0);
-        tableRowB.setLayoutParams(layoutParamsTableRow);
-        this.tableLayoutD.addView(tableRowB, pos);
+        tableRowD.setPadding(0,0,0,0);
+        tableRowD.setLayoutParams(layoutParamsTableRow);
+        this.tableLayoutD.addView(tableRowD, pos);
     }
 
     private synchronized void addColumnToTableAtD(final int rowPos, String text){
-        TableRow tableRowAdd= (TableRow) this.tableLayoutD.getChildAt(rowPos);
+        final TableRow tableRowAdd= (TableRow) this.tableLayoutD.getChildAt(rowPos);
         tableRow= new TableRow(getApplicationContext());
         TableRow.LayoutParams layoutParamsTableRow= new TableRow.LayoutParams(SCREEN_WIDTH/WIDTH_SIZE, SCREEN_HEIGHT/HEIGHT_SIZE);
         tableRow.setPadding(3,3,3,4);
@@ -292,6 +332,83 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         tableRow.setTag(label_date);
         this.tableRow.addView(label_date);
         tableRowAdd.addView(tableRow);
+
+
+        tableRow.setOnClickListener(new View.OnClickListener() {
+
+
+            @Override
+            public void onClick(View v) {
+                makeApt();
+            }
+        });
+    }
+    private void buildCellsForTableD() {
+
+
+        for(int i=0; i<30; i++){
+            int hour = i/4 + 8;
+            int minute =(i%4) * 15;
+            DateFormat df = new SimpleDateFormat("HH:mm");
+            Calendar calendar = currentDay;
+            calendar.set(Calendar.HOUR_OF_DAY,hour);
+            calendar.set(Calendar.MINUTE,minute);
+
+            String timeline = df.format(calendar.getTime());
+
+            addColumnsToTableB(timeline, i);
+        }
+        for(int i=0; i<9; i++){
+            initializeRowForTableD(i);
+            addRowToTableC("Row"+ i);
+            for(int j=0; j<tableColumnCountB; j++){
+                addColumnToTableAtD(i, "D "+ i + " " + j);
+            }
+        }
+    }
+
+    private void makeApt() {
+        OnClickDialog aptDialog = new OnClickDialog();
+        Bundle data = new Bundle();
+        FragmentManager fm = getSupportFragmentManager();
+        aptDialog.show(fm, "ssdf");
+    }
+    public void displayAnAppt (String clientname, String services){
+
+
+
+
+    }
+    public ArrayList<String> getTechNameWhoHaveApptThisDay() {
+        /**
+         * Truy xuất vào ngày hiện tại trên database, lấy tất cả document của thợ nào có hẹn ngày hôm đó cho vào array tên thợ
+         * mục đích là để bên dưới sẽ call database 1 lần nữa, và mở document của thợ nào có hẹn bằng 1 method khác
+         */
+        thoCoHen.clear();
+
+        db.collection("SALONS").document(dba).collection("DATE").document(dateToDatabase).collection("APT")
+                .get()
+                .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot document : task.getResult()) {
+                                thoCoHen.add(document.getId());
+                                Log.d("mytag", "Load dc het ten tho ", task.getException());
+                        } }
+                        else {
+                                Log.d("mytag", "Error getting documents: ", task.getException());
+                            }
+                    }
+                });
+
+        if (thoCoHen.size() != 0) {
+            for (int i = 0; i < thoCoHen.size(); i++) {
+               Log.d("tenthocohen",thoCoHen.get(i));
+            }
+        }
+        return thoCoHen;
+
     }
 
     private void createCompleteColumn(String value){
