@@ -319,8 +319,10 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         this.tableLayoutD.addView(tableRowD, pos);
     }
 
-    private synchronized void addColumnToTableAtD(final int rowPos, String text){
+    private synchronized void addColumnToTableAtD(final int rowPos, String text,int techid, int col){
+        // tạo 1 tablerow mới, hoàn toàn trống, ở vị trí rowpos trong tablelayoutD
         final TableRow tableRowAdd= (TableRow) this.tableLayoutD.getChildAt(rowPos);
+        //tạo 1 tablerow mới (sẽ dc tính như là 1 cell)
         tableRow= new TableRow(getApplicationContext());
         TableRow.LayoutParams layoutParamsTableRow= new TableRow.LayoutParams(SCREEN_WIDTH/WIDTH_SIZE, SCREEN_HEIGHT/HEIGHT_SIZE);
         tableRow.setPadding(3,3,3,4);
@@ -329,19 +331,33 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         TextView label_date = new TextView(getApplicationContext());
         label_date.setText(text);
         label_date.setTextSize(getResources().getDimension(R.dimen.cell_text_size));
+        //settag ko có tác dụng gì hết, vì tag là thuộc tính của view, thông tin này ẩn, dùng để referral sau đó thôi chứ ko xài làm gì cả, xóa line này cũng ko ảnh hưởng gì
         tableRow.setTag(label_date);
-        this.tableRow.addView(label_date);
+        // add textview vô cell, xóa line này thì ko có textview nào nằm trong tablerow này cả
+        //  this.tableRow.addView(label_date);
+        //add  từng cell vô trong tablerowadd line.
+       View cell = new View(getApplicationContext());
+        final int id = 1000+col;
+        cell.setId(id);
+        this.tableRow.addView(cell);
+        if (id%2 == 0){
+            cell.setBackgroundColor(getResources().getColor(R.color.colorAccent));
+        }
+
+
+
+
+
         tableRowAdd.addView(tableRow);
-
-
-        tableRow.setOnClickListener(new View.OnClickListener() {
-
-
+        cell.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                makeApt();
+                makeApt(id);
             }
         });
+
+
+
     }
     private void buildCellsForTableD() {
 
@@ -362,14 +378,15 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
             initializeRowForTableD(i);
             addRowToTableC("Row"+ i);
             for(int j=0; j<tableColumnCountB; j++){
-                addColumnToTableAtD(i, "D "+ i + " " + j);
+                addColumnToTableAtD(i, "",i,j);
             }
         }
     }
 
-    private void makeApt() {
+    private void makeApt(int cellid) {
         OnClickDialog aptDialog = new OnClickDialog();
         Bundle data = new Bundle();
+
         FragmentManager fm = getSupportFragmentManager();
         aptDialog.show(fm, "ssdf");
     }
@@ -411,6 +428,10 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
 
     }
 
+    /**
+     *
+     * ĐỂ DÀNH CHƯA XÀI TỚI
+     *
     private void createCompleteColumn(String value){
         int i=0;
         int j=tableRowCountC-1;
@@ -428,6 +449,6 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
             addColumnToTableAtD(pos, value);
         }
     }
-
+*/
 
 }
