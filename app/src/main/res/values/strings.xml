@@ -3,4 +3,39 @@
     <string name="nav_menu_appt">Special Request</string>
     <string name="nav_menu_services">Services</string>
     <string name="nav_menu_technician">Technician</string>
+    <string name="action_favorite">Add New Technician</string>
+    <string name="action_settings">Action Settings</string>
+    <string name="add_new_services_button_title">ADD A NEW SERVICE</string>
+    <string name="services_settings_help_tittle">Help</string>
+    <string name="service_name">Service:</string>
+    <string name="duration">Duration:</string>
+    <string name="service_type">Type:</string>
+    <string name="nav_menu_Promotion">Promotion</string>
+    <string name="nav_menu_Settings">Settings</string>
+    <string name="nav_menu_purchase">Purchase</string>
+    <string name="service_duration">DURATION</string>
+    <string name="add_a_new_service_string">ADD A NEW SERVICE</string>
+    <string name="ok">OK</string>
+    <string name="cancel">CANCEL</string>
+    <string name="spinner_hour">Hours</string>
+    <string name="spinner_minutes">Minutes</string>
+    <string-array name="hours">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+        <item>10</item>
+    </string-array>
+    <string-array name="minutes">
+        <item>0</item>
+        <item>15</item>
+        <item>30</item>
+        <item>45</item>
+    </string-array>
 </resources>

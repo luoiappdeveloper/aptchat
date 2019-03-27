@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "583226299098",
+    "firebase_url": "https://aptchat-85316.firebaseio.com",
+    "project_id": "aptchat-85316",
+    "storage_bucket": "aptchat-85316.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:583226299098:android:223026efcbc3b1bb",
+        "android_client_info": {
+          "package_name": "com.example.aptchat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "583226299098-gt4ukib6tlbifq11rvvbiisrm9q405oj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.aptchat",
+            "certificate_hash": "c5aefd56cba14d4156459b298e21284d5dcd2091"
+          }
+        },
+        {
+          "client_id": "583226299098-9e7u6jmc27sfjuc6kbt4pdvrqrbrjb9o.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD-lorTwGZr0Ke8Y_1aihuwrOIiuA6mq-w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "583226299098-9e7u6jmc27sfjuc6kbt4pdvrqrbrjb9o.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

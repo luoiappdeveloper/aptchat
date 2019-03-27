@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="60dp">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_name"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_service_name_input"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            android:inputType="text"
+            />
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_duration"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_new_services_hours_spinner">
+
+            </android.support.v7.widget.AppCompatSpinner>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/spinner_hour"/>
+            <android.support.v7.widget.AppCompatSpinner
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/add_new_services_minutes_spinner">
+
+            </android.support.v7.widget.AppCompatSpinner>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/spinner_minutes"/>
+
+
+
+
+
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/service_type"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            android:textAllCaps="true"
+            android:textStyle="bold"
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/settings_service_type_input"
+            android:layout_margin="10dp"
+            android:textSize="12sp"
+            />
+
+
+
+
+
+
+
+
+    </LinearLayout>
+
+</android.support.constraint.ConstraintLayout>

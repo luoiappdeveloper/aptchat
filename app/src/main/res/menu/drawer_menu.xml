@@ -14,6 +14,18 @@
             android:id="@+id/nav_special_request"
             android:icon="@drawable/outline_event_24"
             android:title="@string/nav_menu_appt" />
+        <item
+            android:id="@+id/nav_"
+            android:icon="@drawable/outline_event_24"
+            android:title="@string/nav_menu_Promotion" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/outline_event_24"
+            android:title="@string/nav_menu_Settings" />
+        <item
+            android:id="@+id/nav_purchase"
+            android:icon="@drawable/outline_event_24"
+            android:title="@string/nav_menu_purchase" />
 
     </group>
 </menu>

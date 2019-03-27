@@ -1,12 +1,12 @@
 package com.example.aptchat.Objects;
 
+import java.util.Calendar;
+
 public class Appointment {
     String service;
     String techname;
-    String time;
-    String duration;
-    String positionID;
-    String status;
+    Calendar time;
+    int duration;
 
     public String getService() {
         return service;
@@ -24,19 +24,19 @@ public class Appointment {
         this.techname = techname;
     }
 
-    public String getTime() {
+    public Calendar getTime() {
         return time;
     }
 
-    public void setTime(String time) {
+    public void setTime(Calendar time) {
         this.time = time;
     }
 
-    public String getDuration() {
+    public int getDuration() {
         return duration;
     }
 
-    public void setDuration(String duration) {
+    public void setDuration(int duration) {
         this.duration = duration;
     }
 
@@ -56,7 +56,7 @@ public class Appointment {
         this.status = status;
     }
 
-    public Appointment(String service, String techname, String time, String duration, String positionID, String status) {
+    public Appointment(String service, String techname, Calendar time, int duration, String positionID, String status) {
         this.service = service;
         this.techname = techname;
         this.time = time;
@@ -64,4 +64,9 @@ public class Appointment {
         this.positionID = positionID;
         this.status = status;
     }
+
+    String positionID;
+    String status;
+
+
 }

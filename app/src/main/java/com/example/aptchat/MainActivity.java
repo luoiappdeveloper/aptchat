@@ -1,9 +1,11 @@
 package com.example.aptchat;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
@@ -24,6 +26,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 
+import com.example.aptchat.Settings.ServicesSettings;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -100,6 +103,23 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         actionbar.setDisplayHomeAsUpEnabled(true);
         actionbar.setHomeAsUpIndicator(R.drawable.baseline_menu_24);
         drawerLayout = findViewById(R.id.drawer_layout);
+        NavigationView navigationView = findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(
+                new NavigationView.OnNavigationItemSelectedListener() {
+                    @Override
+                    public boolean onNavigationItemSelected(MenuItem menuItem) {
+                        // set item as selected to persist highlight
+                        menuItem.setChecked(true);
+                        // close drawer when item is tapped
+                        drawerLayout.closeDrawers();
+                        Intent intent = new Intent(getApplicationContext(),ServicesSettings.class);
+                        intent.putExtra("dba",dba);
+                        startActivity(intent);
+
+
+                        return true;
+                    }
+                });
         /*
             Mandatory Content
          */
@@ -352,9 +372,7 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
         final int id = 1000+col;
         cell.setId(id);
         this.tableRow.addView(cell);
-        if (id%2 == 0){
-            cell.setBackgroundColor(getResources().getColor(R.color.colorAccent));
-        }
+
 
 
 

@@ -3,6 +3,7 @@ package com.example.aptchat.Objects;
 public class Services {
     String name;
     int duration;
+    String type;
 
     public Services(String name, int duration, String type) {
         this.name = name;
@@ -10,7 +11,6 @@ public class Services {
         this.type = type;
     }
 
-    String type;
 
     public String getName() {
         return name;
