@@ -1,66 +1,90 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="60dp">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_margin="30sp">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
+
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="right"
+        android:orientation="vertical"
+        tools:layout_editor_absoluteX="144dp"
+        tools:layout_editor_absoluteY="0dp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="@string/service_name"
-            android:layout_margin="10dp"
-            android:textSize="12sp"
             android:textAllCaps="true"
-            android:textStyle="bold"
-            />
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
         <EditText
+            android:id="@+id/settings_service_name_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/settings_service_name_input"
             android:layout_margin="10dp"
-            android:textSize="12sp"
             android:inputType="text"
-            />
+            android:textSize="12sp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/service_duration"
             android:layout_margin="10dp"
-            android:textSize="12sp"
+            android:text="@string/service_duration"
             android:textAllCaps="true"
-            android:textStyle="bold"
-            />
+            android:textSize="12sp"
+            android:textStyle="bold" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
+
             <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/add_new_services_hours_spinner"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:id="@+id/add_new_services_hours_spinner">
+                android:layout_marginLeft="10dp">
 
             </android.support.v7.widget.AppCompatSpinner>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/spinner_hour"/>
+                android:text="@string/spinner_hour" />
+
             <android.support.v7.widget.AppCompatSpinner
+                android:id="@+id/add_new_services_minutes_spinner"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/add_new_services_minutes_spinner">
+                android:layout_height="wrap_content">
 
             </android.support.v7.widget.AppCompatSpinner>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/spinner_minutes"/>
-
-
-
+                android:text="@string/spinner_minutes" />
 
 
         </LinearLayout>
@@ -68,27 +92,30 @@
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_margin="10dp"
             android:text="@string/service_type"
-            android:layout_margin="10dp"
-            android:textSize="12sp"
             android:textAllCaps="true"
-            android:textStyle="bold"
-            />
-        <EditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/settings_service_type_input"
-            android:layout_margin="10dp"
             android:textSize="12sp"
-            />
+            android:textStyle="bold" />
 
+        <android.support.v7.widget.AppCompatSpinner
+            android:id="@+id/add_new_services_group_selection_spinner"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="left"
+            android:layout_margin="10dp">
 
-
-
-
-
+        </android.support.v7.widget.AppCompatSpinner>
+        <Button
+            android:id="@+id/add_a_new_service_ok_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="OK"
+            android:textSize="12sp"
+            android:layout_margin="10dp"/>
 
 
     </LinearLayout>
 
+    </LinearLayout>
 </android.support.constraint.ConstraintLayout>

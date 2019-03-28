@@ -1,7 +1,10 @@
 package com.example.aptchat.Settings;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -26,12 +29,14 @@ import static com.example.aptchat.MainActivity.dba;
 public class ServicesSettings extends AppCompatActivity {
 
     //list of services provided by business
-    ArrayList<Services> servicesArrayList;
+    static ArrayList<Services> servicesArrayList;
     private ListView listView;
     private ServicesItemListViewAdapter mAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private MainActivity m;
     public static String SERVICES = "SERVICES";
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,33 +59,34 @@ public class ServicesSettings extends AppCompatActivity {
                 try {
             db.collection("SALON").document(MainActivity.dba).collection(SERVICES)
                     .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                     @Override
-                                                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                         if (task.isSuccessful()) {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
 
-                                                             for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                                                 String serviceName = documentSnapshot.get("ServiceName").toString();
-                                                                 int serviceDuration = (Integer) documentSnapshot.get("ServiceDuration");
-                                                                 String serviceType = documentSnapshot.get("ServiceType").toString();
-                                                                 servicesArrayList.add(new Services(serviceName, serviceDuration, serviceType));
+                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
+                                    String serviceName = documentSnapshot.get("ServiceName").toString();
+                                    int serviceDuration = Integer.parseInt(documentSnapshot.get("ServiceDuration").toString()) ;
+                                    String serviceType = documentSnapshot.get("ServiceType").toString();
+                                    servicesArrayList.add(new Services(serviceName, serviceDuration, serviceType));
                                                              }
+                                if (servicesArrayList.size() > 0) {
+                                    mAdapter = new ServicesItemListViewAdapter(getApplicationContext(), servicesArrayList);
+                                    listView.setAdapter(mAdapter);
+                                }
 
-                                                         } else {
-                                                             Log.d("mytag", "Error getting documents: ", task.getException());
-                                                         }
-                                                     }
-                                                 }
+                            } else {
+                                Log.d("mytag", "Error getting documents: ", task.getException());
+                            }
+                        }
+                    }
             );
         } catch (NullPointerException e) {
 
-            Toast.makeText(getApplicationContext(), "Please ADD A SERVICE or check your connection and try again", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Please ADD A SERVICE or check your connection and try again", Toast.LENGTH_LONG).show();
         }
 
 
-        if (servicesArrayList.size() != 0) {
-            mAdapter = new ServicesItemListViewAdapter(this, servicesArrayList);
-            listView.setAdapter(mAdapter);
-        }
+
     }
 
     @Override
@@ -105,12 +111,8 @@ public class ServicesSettings extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.add_new_services_button) {
-
-
-
-
-
-
+         Intent intent= new Intent(getApplicationContext(),AddNewServiceActivity.class);
+         startActivity(intent);
 
             return true;
         }

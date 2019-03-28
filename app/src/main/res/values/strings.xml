@@ -7,9 +7,9 @@
     <string name="action_settings">Action Settings</string>
     <string name="add_new_services_button_title">ADD A NEW SERVICE</string>
     <string name="services_settings_help_tittle">Help</string>
-    <string name="service_name">Service:</string>
+    <string name="service_name">Service Name:</string>
     <string name="duration">Duration:</string>
-    <string name="service_type">Type:</string>
+    <string name="service_type">Service Group:</string>
     <string name="nav_menu_Promotion">Promotion</string>
     <string name="nav_menu_Settings">Settings</string>
     <string name="nav_menu_purchase">Purchase</string>
@@ -19,6 +19,8 @@
     <string name="cancel">CANCEL</string>
     <string name="spinner_hour">Hours</string>
     <string name="spinner_minutes">Minutes</string>
+    <string name="service_duration_is_not_valid">Service duration cannot be blank, please check again!</string>
+    <string name="service_name_is_not_valid">Service Name cannot be blank, please check again!</string>
     <string-array name="hours">
         <item>0</item>
         <item>1</item>
@@ -37,5 +39,18 @@
         <item>15</item>
         <item>30</item>
         <item>45</item>
+    </string-array>
+    <string-array name="type_to_select">
+        <item>GROUP A</item>
+        <item>GROUP B</item>
+        <item>GROUP C</item>
+        <item>GROUP D</item>
+        <item>GROUP E</item>
+        <item>GROUP F</item>
+        <item>GROUP G</item>
+        <item>GROUP H</item>
+        <item>GROUP I</item>
+        <item>GROUP K</item>
+        <item>GROUP L</item>
     </string-array>
 </resources>

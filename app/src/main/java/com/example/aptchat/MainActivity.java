@@ -113,7 +113,6 @@ public class MainActivity extends AppCompatActivity implements HorizontalScroll.
                         // close drawer when item is tapped
                         drawerLayout.closeDrawers();
                         Intent intent = new Intent(getApplicationContext(),ServicesSettings.class);
-                        intent.putExtra("dba",dba);
                         startActivity(intent);
 
 

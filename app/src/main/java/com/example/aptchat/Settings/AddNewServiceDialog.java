@@ -18,6 +18,7 @@ import android.widget.Toast;
 import com.example.aptchat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
@@ -28,6 +29,7 @@ import static com.example.aptchat.MainActivity.dba;
 public class AddNewServiceDialog extends DialogFragment implements AdapterView.OnItemSelectedListener {
         EditText clientName ;
         EditText services;
+        ServicesSettings mServicesSettings;
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -39,35 +41,75 @@ public class AddNewServiceDialog extends DialogFragment implements AdapterView.O
             final View view = inflater.inflate(R.layout.add_a_new_service_dialog,null);
             builder.setView(view);
 
+            /**
+             * Tạo Hashmap chứa 1 service mới để bỏ lên database
+             */
+            final HashMap<String,String> service = new HashMap<>();
+            /**
+             * Lấy edit text của tên service và service Type
+             */
+            final EditText serviceNameeditText = (EditText) view.findViewById(R.id.settings_service_name_input);
+
+
+
+
+
+            /**
+             * Tạo 2 spinner giờ và phút
+             * Chọn giờ chọn phút xong thì sẽ lấy giờ x4 + phút để tính ra duration.
+             * Duration là 1 số int, vd 1h30p tương đương duration  = 6
+             */
+            final Spinner hoursSpinner = view.findViewById(R.id.add_new_services_hours_spinner);
+            ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.hours,android.R.layout.simple_spinner_item);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            hoursSpinner.setAdapter(arrayAdapter);
+
+            final Spinner minutesSpinner = view.findViewById(R.id.add_new_services_minutes_spinner);
+            ArrayAdapter<CharSequence> minutesArrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.minutes,android.R.layout.simple_spinner_item);
+            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+            minutesSpinner.setAdapter(minutesArrayAdapter);
 
 
             builder.setMessage(R.string.add_a_new_service_string)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
-                            HashMap<String,String> service = new HashMap<>();
-                            EditText serviceNameeditText = (EditText) view.findViewById(R.id.settings_service_name_input);
-                            EditText serviceTypeEditText = (EditText) view.findViewById(R.id.settings_service_type_input);
-                            String serviceName = serviceNameeditText.getText().toString();
-                            String serviceType = serviceTypeEditText.getText().toString();
 
-                            Spinner hoursSpinner = view.findViewById(R.id.add_new_services_hours_spinner);
-                            ArrayAdapter<CharSequence> arrayAdapter = ArrayAdapter.createFromResource(getContext(),R.array.hours,android.R.layout.simple_spinner_item);
-                            arrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            hoursSpinner.setAdapter(arrayAdapter);
-                            hoursSpinner.getOnItemSelectedListener();
-                            Spinner minutesSpinner = view.findViewById(R.id.add_new_services_minutes_spinner);
-
+                            /**
+                             * Lấy vị trí của spinner để thành integer, vị trí hour x4 + vị trí minute
+                             */
                             try{
-                                int serviceDurationInt = Integer.parseInt(serviceDuration);
-                            }catch (NumberFormatException e){
-                                Toast.makeText(getContext(),"Duration ")
-                            }
+
+                                String serviceName = serviceNameeditText.getText().toString();
+
+
+                               int hours= hoursSpinner.getSelectedItemPosition() * 4;
+                               int minute= minutesSpinner.getSelectedItemPosition();
+                               int serviceDuration = hours + minute ;
+                               if (serviceDuration == 0){
+
+
+                               }
+
+
 
                             service.put("ServiceName",serviceName);
-                            service.put("ServiceDuration",serviceDuration);
-                            service.put("ServiceType",serviceType);
-                            db.collection("SALON").document(dba).collection(ServicesSettings.SERVICES).add()
+                            service.put("ServiceDuration",serviceDuration+"");
 
+                            db.collection("SALON").document(dba).collection(ServicesSettings.SERVICES).add(service).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                @Override
+                                public void onComplete(@NonNull Task<DocumentReference> task) {
+                                    if(task.isSuccessful()){
+                                        showToast("New Services Succesfully Added");
+                                    } else{
+                                        showToast("Please check your connection and try again later");
+
+                                    }
+                                }
+                            });
+
+                            }catch (Exception e){
+                                showToast("Please check your connection and try again later");
+                            }
                         }
                     })
                     .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -79,7 +121,11 @@ public class AddNewServiceDialog extends DialogFragment implements AdapterView.O
             // Create the AlertDialog object and return it
             return builder.create();
         }
+    public void showToast (String toast){
 
+
+
+    }
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
@@ -90,4 +136,4 @@ public class AddNewServiceDialog extends DialogFragment implements AdapterView.O
 
     }
 }
-}
+

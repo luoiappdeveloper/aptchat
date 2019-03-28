@@ -11,6 +11,7 @@
         android:theme="@style/Theme.AppCompat.Light.NoActionBar" >>
         <activity android:name=".Settings.ServicesSettings"></activity>
         <activity android:name=".Settings.TechnicianSettings" />
+        <activity android:name=".Settings.AddNewServiceActivity" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="landscape">
