@@ -7,6 +7,10 @@
         android:id="@+id/add_new_services_button"
         android:title="@string/add_new_services_button_title"
         app:showAsAction="ifRoom"/>
+    <item
+        android:id="@+id/service_setting_refresh_button"
+        android:title="@string/service_setting_refresh"
+        app:showAsAction="ifRoom"/>
 
     <!-- Settings, should always be in the overflow -->
     <item android:id="@+id/services_settings_help_button"

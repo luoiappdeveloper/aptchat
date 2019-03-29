@@ -10,6 +10,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -18,11 +19,14 @@ import com.example.aptchat.Objects.Services;
 import com.example.aptchat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.example.aptchat.MainActivity.dba;
 
@@ -30,7 +34,7 @@ public class ServicesSettings extends AppCompatActivity {
 
     //list of services provided by business
     static ArrayList<Services> servicesArrayList;
-    private ListView listView;
+    private static GridView listView;
     private ServicesItemListViewAdapter mAdapter;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private MainActivity m;
@@ -46,6 +50,7 @@ public class ServicesSettings extends AppCompatActivity {
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("SERVICE SETTINGS");
 
 
         listView = findViewById(R.id.list_view_services_settings);
@@ -56,37 +61,61 @@ public class ServicesSettings extends AppCompatActivity {
          * Nếu ko có thì try catch
          */
         // LẤy tên business từ main activity
-                try {
-            db.collection("SALON").document(MainActivity.dba).collection(SERVICES)
-                    .get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
+        getServicesFromFirestore();
 
-                                for (QueryDocumentSnapshot documentSnapshot : task.getResult()) {
-                                    String serviceName = documentSnapshot.get("ServiceName").toString();
-                                    int serviceDuration = Integer.parseInt(documentSnapshot.get("ServiceDuration").toString()) ;
-                                    String serviceType = documentSnapshot.get("ServiceType").toString();
-                                    servicesArrayList.add(new Services(serviceName, serviceDuration, serviceType));
-                                                             }
+
+
+
+    }
+
+    private void getServicesFromFirestore() {
+        try {
+            db.collection("SALON").document(MainActivity.dba).collection(SERVICES).document("ALL SERVICES")
+                    .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    DocumentSnapshot documentSnapshot = task.getResult();
+                    if (documentSnapshot.exists()){
+                        /**
+                         *  Tạo 1 Map<String, Object>, mỗi phần từ trong map là 1 service, (1 field trên database)
+                         *  Mà 1 field này lại là 1 Map <String, String> Mỗi cái có chứa 3 thành phần.
+                         */
+                            Map<String,Object> allservice = documentSnapshot.getData();
+                            if (allservice != null){
+                                /**
+                                 * Vòng lặp for chạy cho từng field, mỗi field này là 1 object, phải cast cái object này thành Map<string,string>
+                                 *  Vì mình đã biết các key nằm trong map này là "ServiceName, ServiceDuration, ServiceType"
+                                 *  Có thể dễ dàng lấy dữ liệu ra như 1 hashmap bình thường
+                                 *  Sau đó bỏ vô arraylist.
+                                 *
+                                 */
+                                for(Map.Entry<String,Object> entry : allservice.entrySet()){
+                                    //cast object thành map
+                                   Map<String,String> field = (Map<String,String>)entry.getValue();
+                                   //lấy dữ liệu trong map
+                                   String serviceName = field.get("ServiceName");
+                                   int serviceDuration = Integer.parseInt(field.get("ServiceDuration"));
+                                   String serviceType = field.get("ServiceType");
+
+                                   servicesArrayList.add(new Services(serviceName,serviceDuration,serviceType));
+
+                                }
                                 if (servicesArrayList.size() > 0) {
                                     mAdapter = new ServicesItemListViewAdapter(getApplicationContext(), servicesArrayList);
                                     listView.setAdapter(mAdapter);
+
                                 }
 
-                            } else {
-                                Log.d("mytag", "Error getting documents: ", task.getException());
+
                             }
-                        }
-                    }
-            );
-        } catch (NullPointerException e) {
 
-            Toast.makeText(this, "Please ADD A SERVICE or check your connection and try again", Toast.LENGTH_LONG).show();
+                }
+            }
+            });
+
+        }catch (Exception e){
+
         }
-
-
-
     }
 
     @Override
@@ -115,6 +144,11 @@ public class ServicesSettings extends AppCompatActivity {
          startActivity(intent);
 
             return true;
+        }
+        if (id == R.id.service_setting_refresh_button){
+            servicesArrayList.clear();
+            listView.setAdapter(null);
+            getServicesFromFirestore();
         }
 
         return super.onOptionsItemSelected(item);

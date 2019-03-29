@@ -15,6 +15,7 @@ import com.example.aptchat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 
@@ -30,12 +31,18 @@ public class AddNewServiceActivity extends AppCompatActivity {
         Toolbar myToolbar = (Toolbar) findViewById(R.id.my_toolbar);
         setSupportActionBar(myToolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        getSupportActionBar().setTitle("ADD A NEW SERVICE");
 
         /**
-         * Tạo Hashmap chứa 1 service mới để bỏ lên database
+         * Tạo Hashmap chứa 1 service mới để bỏ lên database, 3 thành phần tên, duration, type sẽ nằm trong object này
          */
-        final HashMap<String,String> service = new HashMap<>();
+        final HashMap<String,String> serviceDetail  = new HashMap<>();
+
+        /**
+         * Tạo 1 hashmap khác chứa hash map object bên trên để tạo thành 1 field trên database
+         */
+        final HashMap<String,Object> service = new HashMap<>();
+
         /**
          * Lấy edit text của tên service và service Type
          */
@@ -86,23 +93,49 @@ public class AddNewServiceActivity extends AppCompatActivity {
 
                     String serviceType = serviceTypeSpinner.getSelectedItem().toString();
 
-                    service.put("ServiceName",serviceName);
-                    service.put("ServiceDuration",serviceDuration+"");
-                    service.put("ServiceType",serviceType);
+                    serviceDetail.put("ServiceName",serviceName);
+                    serviceDetail.put("ServiceDuration",serviceDuration+"");
+                    serviceDetail.put("ServiceType",serviceType);
+
+
+                    /**
+                     * Bỏ service vô group chứa service đó. Chưa biết để làm gì, cứ bỏ vô mai mốt có thể sẽ cần.
+                     */
 
                     db.collection("SALON").document(dba).collection(ServicesSettings.SERVICES).document(serviceType)
-                            .set(service).addOnCompleteListener(new OnCompleteListener<Void>() {
+                            .set(serviceDetail,SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
                             if (task.isSuccessful()){
-                                Toast.makeText(AddNewServiceActivity.this, "Service Successfully added. You can add another service", Toast.LENGTH_LONG).show();
+
+                            //    Toast.makeText(AddNewServiceActivity.this, "Service Successfully added. You can add another service", Toast.LENGTH_LONG).show();
                             }else{
-                                Toast.makeText(AddNewServiceActivity.this, "Service is not added, please check your connection and try again.", Toast.LENGTH_SHORT).show();
+                           //     Toast.makeText(AddNewServiceActivity.this, "Service is not added, please check your connection and try again.", Toast.LENGTH_SHORT).show();
                             }
                         }
                     });
 
-            }
+                    /**
+                     * Bỏ service vô document chứa toàn bộ service để lôi ra xài.
+                     */
+                    service.put(serviceName,serviceDetail);
+
+                    db.collection("SALON").document(dba).collection(ServicesSettings.SERVICES).document("ALL SERVICES")
+                            .set(service, SetOptions.merge()).addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()){
+                                serviceDetail.clear();
+                                service.clear();
+                                Toast.makeText(AddNewServiceActivity.this, "Service Successfully added. You can add another service", Toast.LENGTH_LONG).show();
+                            }else{
+                                serviceDetail.clear();
+                                service.clear();
+                                Toast.makeText(AddNewServiceActivity.this, "Service is not added, please check your connection and try again.", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                }
             }
 
       });

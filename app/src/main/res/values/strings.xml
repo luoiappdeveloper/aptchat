@@ -21,6 +21,7 @@
     <string name="spinner_minutes">Minutes</string>
     <string name="service_duration_is_not_valid">Service duration cannot be blank, please check again!</string>
     <string name="service_name_is_not_valid">Service Name cannot be blank, please check again!</string>
+    <string name="service_setting_refresh">REFRESH</string>
     <string-array name="hours">
         <item>0</item>
         <item>1</item>
