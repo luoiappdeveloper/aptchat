@@ -100,6 +100,7 @@
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:id="@+id/service_setting_delete_button"
                 android:text="DELETE"/>
             <Button
                 android:layout_width="wrap_content"

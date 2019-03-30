@@ -9,18 +9,31 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.aptchat.MainActivity;
 import com.example.aptchat.Objects.Services;
 import com.example.aptchat.Objects.Technician;
 import com.example.aptchat.R;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.FieldValue;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static com.example.aptchat.Settings.ServicesSettings.SERVICES;
 
 public class ServicesItemListViewAdapter extends ArrayAdapter<Services> {
     private Context mContext;
     private List<Services> servicesList = new ArrayList<>();
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private ServicesSettings ss =new ServicesSettings();
 
 
     public ServicesItemListViewAdapter(@NonNull Context context, @SuppressLint("SupportAnnotationUsage") @LayoutRes ArrayList<Services> list) {
@@ -40,13 +53,39 @@ public class ServicesItemListViewAdapter extends ArrayAdapter<Services> {
 
 
         TextView name = listItem.findViewById(R.id.services_list_item_service_name);
-        name.setText(currentService.getName());
+        final String serviceName = currentService.getName();
+        name.setText(serviceName);
 
         TextView duration =  listItem.findViewById(R.id.services_list_item_duration);
-        duration.setText(""+currentService.getDuration());
+        String serviceDuration = currentService.getDuration()+"";
+        duration.setText(serviceDuration);
 
         TextView type = listItem.findViewById(R.id.services_list_item_type);
-        type.setText(currentService.getType());
+        String serviceType = currentService.getType();
+        type.setText(serviceType);
+
+
+        Button deleteService = listItem.findViewById(R.id.service_setting_delete_button);
+        deleteService.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //delete a field
+                Map<String,Object> updates = new HashMap<>();
+                updates.put(serviceName, FieldValue.delete());
+
+                db.collection("SALON").document(MainActivity.dba).collection(SERVICES).document("ALL SERVICES")
+                        .update(updates).addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()){
+                        Toast.makeText(getContext(),"Service deleted",Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+            }
+        });
+
         return listItem;
     }
 }

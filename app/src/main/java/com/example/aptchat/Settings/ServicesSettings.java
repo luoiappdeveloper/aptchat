@@ -4,12 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ListView;
 import android.widget.Toast;
@@ -19,8 +22,11 @@ import com.example.aptchat.Objects.Services;
 import com.example.aptchat.R;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -39,7 +45,7 @@ public class ServicesSettings extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private MainActivity m;
     public static String SERVICES = "SERVICES";
-
+    private String TAG = "Tag";
 
 
     @Override
@@ -56,20 +62,50 @@ public class ServicesSettings extends AppCompatActivity {
         listView = findViewById(R.id.list_view_services_settings);
         servicesArrayList = new ArrayList<>();
 
+
+
+
+
         /**
-         * Vào database lấy services list xuống bỏ vào servicesArrayList
-         * Nếu ko có thì try catch
+         *On DATA CHange listener.
+         * khi tạo mới hoặc xóa service thì thằng này chạy lại.
+         * Vấn đề là khi xóa cái cuối cùng thì list ko xóa
          */
-        // LẤy tên business từ main activity
-        getServicesFromFirestore();
+
+        final DocumentReference docRef = db.collection("SALON").document(MainActivity.dba).collection(SERVICES).document("ALL SERVICES");
+        docRef.addSnapshotListener(new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot snapshot,
+                                @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e);
+                    return;
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    servicesArrayList.clear();
+                    getServicesFromFirestore();
+                } else if ( snapshot == null ){
+                    servicesArrayList.clear();
+                    mAdapter = new ServicesItemListViewAdapter(ServicesSettings.this, servicesArrayList);
+                    listView.setAdapter(mAdapter);
+                }else{
+                    Log.w(TAG, "Listen failed.", e);
+                }
+            }
+        });
 
 
 
 
     }
 
-    private void getServicesFromFirestore() {
-        try {
+    public void getServicesFromFirestore() {
+        /**
+         * Vào database lấy services list xuống bỏ vào servicesArrayList
+         * Nếu ko có thì try catch
+         */
+
             db.collection("SALON").document(MainActivity.dba).collection(SERVICES).document("ALL SERVICES")
                     .get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                 @Override
@@ -101,7 +137,7 @@ public class ServicesSettings extends AppCompatActivity {
 
                                 }
                                 if (servicesArrayList.size() > 0) {
-                                    mAdapter = new ServicesItemListViewAdapter(getApplicationContext(), servicesArrayList);
+                                    mAdapter = new ServicesItemListViewAdapter(ServicesSettings.this, servicesArrayList);
                                     listView.setAdapter(mAdapter);
 
                                 }
@@ -113,10 +149,10 @@ public class ServicesSettings extends AppCompatActivity {
             }
             });
 
-        }catch (Exception e){
+
 
         }
-    }
+
 
     @Override
     public boolean onSupportNavigateUp() {
